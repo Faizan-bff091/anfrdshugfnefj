@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Script Viewer</title>
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.css" rel="stylesheet" />
+  <style>
+    body {
+      background: #0b0f2b;
+      color: #eee;
+      font-family: 'Segoe UI', sans-serif;
+      padding: 2em;
+      margin: 0;
+    }
+    h1 {
+      color: #00c3ff;
+    }
+    pre {
+      background: #1e1e3f;
+      padding: 1em;
+      border-radius: 10px;
+      overflow-x: auto;
+      max-height: 80vh;
+    }
+    a.back {
+      display: inline-block;
+      margin-bottom: 1em;
+      color: #00c3ff;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">← Back to Script List</a>
+  <h1>Viewing Script</h1>
+  <pre><code id="scriptContent" class="language-lua">Loading...</code></pre>
+
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-lua.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const scriptName = urlParams.get("script");
+
+    if (scriptName) {
+      fetch(`scripts/${scriptName}`)
+        .then(res => {
+          if (!res.ok) throw new Error("Script not found");
+          return res.text();
+        })
+        .then(code => {
+          document.getElementById("scriptContent").textContent = code;
+          Prism.highlightAll();
+        })
+        .catch(err => {
+          document.getElementById("scriptContent").textContent = "Error loading script.";
+        });
+    } else {
+      document.getElementById("scriptContent").textContent = "No script specified.";
+    }
+  </script>
+</body>
+</html>
